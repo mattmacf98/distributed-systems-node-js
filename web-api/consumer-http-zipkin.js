@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+const server = require('fastify')();
+const fetch = require('node-fetch');
+const HOST = process.env.HOST || '127.0.0.1';
+const PORT = process.env.PORT || 3000;
+const TARGET = process.env.TARGET || '127.0.0.1:4000';
+const ZIPKIN = process.env.TARGET || '127.0.0.1:9411';
+const Zipkin = require('zipkin-lite');
+const zipkin = new Zipkin({
+    zipkinHost: ZIPKIN,
+    serviceName: 'web-api',
+    servicePort: PORT,
+    serviceIp: HOST,
+    init: 'short'
+});
+server.addHook('onRequest', zipkin.onRequest());
+server.addHook('onResponse', zipkin.onResponse());
+
+server.get('/', async (req) => {
+    req.zipkin.setName('get_root');
+
+   const url = `http://${TARGET}/recipes/42`;
+   const zreq = req.zipkin.prepare();
+   const res = await fetch(url, {headers: zreq.headers});
+   zreq.complete('GET', url);
+   const producer_data = await res.json();
+
+   return {
+       consumer_pid: process.pid,
+       producer_data: producer_data,
+       trace: req.zipkin.trace
+   };
+});
+
+server.listen(PORT, HOST, () => {
+    console.log(`Consumer running at http://${HOST}:${PORT}`)
+})

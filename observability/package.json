@@ -1,19 +1,16 @@
 {
-  "name": "recipe-api",
+  "name": "observability",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "basic-http-healthcheck.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@grpc/grpc-js": "1.1",
-    "@grpc/proto-loader": "^0.5.6",
     "fastify": "3.2",
-    "fastify-gql": "5.3",
-    "zipkin-lite": "^0.1.1"
+    "ioredis": "4.17",
+    "pg": "8.3"
   }
 }
