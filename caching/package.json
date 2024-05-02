@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "fastify": "3.2",
+    "lru-cache": "6.0",
+    "node-fetch": "2.6"
+  }
+}
